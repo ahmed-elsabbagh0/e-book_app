@@ -44,7 +44,7 @@ class BookDetailsSection extends StatelessWidget {
         const SizedBox(height: 20,),
         Text(book.volumeInfo.publishedDate  ?? '2023'),
         const SizedBox(height: 37,),
-        const BooksAction(),
+        BooksAction(bookModel: book),
       ],
     );
   }
