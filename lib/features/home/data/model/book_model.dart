@@ -34,7 +34,9 @@ class BookModel {
     map['id'] = id;
     map['etag'] = etag;
     map['selfLink'] = selfLink;
-    map['volumeInfo'] = volumeInfo.toJson();
+
+      map['volumeInfo'] = volumeInfo.toJson();
+
     if (saleInfo != null) {
       map['saleInfo'] = saleInfo?.toJson();
     }
@@ -132,20 +134,16 @@ Epub epubFromJson(String str) => Epub.fromJson(json.decode(str));
 String epubToJson(Epub data) => json.encode(data.toJson());
 class Epub {
   Epub({
-      this.isAvailable, 
-      this.acsTokenLink,});
+      this.isAvailable,});
 
   Epub.fromJson(dynamic json) {
     isAvailable = json['isAvailable'];
-    acsTokenLink = json['acsTokenLink'];
   }
   bool? isAvailable;
-  String? acsTokenLink;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['isAvailable'] = isAvailable;
-    map['acsTokenLink'] = acsTokenLink;
     return map;
   }
 
@@ -157,26 +155,105 @@ class SaleInfo {
   SaleInfo({
       this.country, 
       this.saleability, 
-      this.isEbook,});
+      this.isEbook, 
+
+      this.retailPrice, 
+      this.buyLink, 
+      this.offers,});
 
   SaleInfo.fromJson(dynamic json) {
     country = json['country'];
     saleability = json['saleability'];
     isEbook = json['isEbook'];
+    retailPrice = json['retailPrice'] != null ? RetailPrice.fromJson(json['retailPrice']) : null;
+    buyLink = json['buyLink'];
+    if (json['offers'] != null) {
+      offers = [];
+      json['offers'].forEach((v) {
+        offers?.add(Offers.fromJson(v));
+      });
+    }
   }
   String? country;
   String? saleability;
   bool? isEbook;
+  RetailPrice? retailPrice;
+  String? buyLink;
+  List<Offers>? offers;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['country'] = country;
     map['saleability'] = saleability;
     map['isEbook'] = isEbook;
+    if (retailPrice != null) {
+      map['retailPrice'] = retailPrice?.toJson();
+    }
+    map['buyLink'] = buyLink;
+    if (offers != null) {
+      map['offers'] = offers?.map((v) => v.toJson()).toList();
+    }
     return map;
   }
 
 }
+
+Offers offersFromJson(String str) => Offers.fromJson(json.decode(str));
+String offersToJson(Offers data) => json.encode(data.toJson());
+class Offers {
+  Offers({
+      this.finskyOfferType,
+      this.retailPrice, 
+      this.giftable,});
+
+  Offers.fromJson(dynamic json) {
+    finskyOfferType = json['finskyOfferType'];
+    retailPrice = json['retailPrice'] != null ? RetailPrice.fromJson(json['retailPrice']) : null;
+    giftable = json['giftable'];
+  }
+  num? finskyOfferType;
+  RetailPrice? retailPrice;
+  bool? giftable;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['finskyOfferType'] = finskyOfferType;
+    if (retailPrice != null) {
+      map['retailPrice'] = retailPrice?.toJson();
+    }
+    map['giftable'] = giftable;
+    return map;
+  }
+
+}
+
+RetailPrice retailPriceFromJson(String str) => RetailPrice.fromJson(json.decode(str));
+String retailPriceToJson(RetailPrice data) => json.encode(data.toJson());
+class RetailPrice {
+  RetailPrice({
+      this.amountInMicros, 
+      this.currencyCode,});
+
+  RetailPrice.fromJson(dynamic json) {
+    amountInMicros = json['amountInMicros'];
+    currencyCode = json['currencyCode'];
+  }
+  num? amountInMicros;
+  String? currencyCode;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['amountInMicros'] = amountInMicros;
+    map['currencyCode'] = currencyCode;
+    return map;
+  }
+
+}
+
+
+
+
+
 
 VolumeInfo volumeInfoFromJson(String str) => VolumeInfo.fromJson(json.decode(str));
 String volumeInfoToJson(VolumeInfo data) => json.encode(data.toJson());
@@ -197,7 +274,7 @@ class VolumeInfo {
       this.allowAnonLogging, 
       this.contentVersion, 
       this.panelizationSummary, 
-      required this.imageLinks,
+      this.imageLinks, 
       this.language, 
       this.previewLink, 
       this.infoLink, 
@@ -224,7 +301,7 @@ class VolumeInfo {
     allowAnonLogging = json['allowAnonLogging'];
     contentVersion = json['contentVersion'];
     panelizationSummary = json['panelizationSummary'] != null ? PanelizationSummary.fromJson(json['panelizationSummary']) : null;
-    imageLinks = ImageLinks.fromJson(json['imageLinks']) ;
+    imageLinks = json['imageLinks'] != null ? ImageLinks.fromJson(json['imageLinks']) : null;
     language = json['language'];
     previewLink = json['previewLink'];
     infoLink = json['infoLink'];
@@ -245,7 +322,7 @@ class VolumeInfo {
   bool? allowAnonLogging;
   String? contentVersion;
   PanelizationSummary? panelizationSummary;
-  late ImageLinks imageLinks;
+  ImageLinks? imageLinks;
   String? language;
   String? previewLink;
   String? infoLink;
@@ -274,9 +351,9 @@ class VolumeInfo {
     if (panelizationSummary != null) {
       map['panelizationSummary'] = panelizationSummary?.toJson();
     }
-
-    map['imageLinks'] = imageLinks.toJson();
-
+    if (imageLinks != null) {
+      map['imageLinks'] = imageLinks?.toJson();
+    }
     map['language'] = language;
     map['previewLink'] = previewLink;
     map['infoLink'] = infoLink;
@@ -290,16 +367,15 @@ ImageLinks imageLinksFromJson(String str) => ImageLinks.fromJson(json.decode(str
 String imageLinksToJson(ImageLinks data) => json.encode(data.toJson());
 class ImageLinks {
   ImageLinks({
-      required this.smallThumbnail,
-      required this.thumbnail,});
+      this.smallThumbnail, 
+      this.thumbnail,});
 
   ImageLinks.fromJson(dynamic json) {
     smallThumbnail = json['smallThumbnail'];
     thumbnail = json['thumbnail'];
-
   }
-  late String smallThumbnail;
-  late String thumbnail;
+  String? smallThumbnail;
+  String? thumbnail;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};

@@ -13,8 +13,11 @@ class NewestBooksItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        GoRouter.of(context).push(AppRouter.kBookDetailsView);
+      onTap: () {
+        GoRouter.of(context).push(
+          AppRouter.kBookDetailsView,
+          extra: bookModel,
+        );
       },
       child: SizedBox(
         height: 140,
@@ -22,7 +25,8 @@ class NewestBooksItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 30),
           child: Row(
             children: [
-              CustomBookImage(imageUrl: bookModel.volumeInfo.imageLinks.thumbnail),
+              CustomBookImage(
+                  imageUrl: bookModel.volumeInfo.imageLinks?.thumbnail ?? ''),
               const SizedBox(
                 width: 30,
               ),
@@ -45,9 +49,11 @@ class NewestBooksItem extends StatelessWidget {
                     const SizedBox(
                       height: 20,
                     ),
-                     Text(
+                    Text(
                       bookModel.volumeInfo.authors![0],
                       style: Styles.textStyle14,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(
                       height: 20,
@@ -60,14 +66,18 @@ class NewestBooksItem extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Spacer(flex: 2,),
+                        const Spacer(
+                          flex: 2,
+                        ),
                         Text(
-                          bookModel.volumeInfo.publishedDate!,
+                          bookModel.volumeInfo.publishedDate ?? '',
                           style: Styles.textStyle14.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        const Spacer(flex: 1,)
+                        const Spacer(
+                          flex: 1,
+                        )
                       ],
                     )
                   ],
